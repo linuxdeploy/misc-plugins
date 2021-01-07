@@ -37,5 +37,7 @@ echo "Installing AppRun hook"
 set -x
 mkdir -p "$appdir"/apprun-hooks
 cat > "$appdir"/apprun-hooks/linuxdeploy-plugin-gettext.sh <<\EOF
-export TEXTDOMAINDIR="$this_dir"/usr/share/locale:"$TEXTDOMAINDIR"
+#! /bin/bash
+
+export TEXTDOMAINDIR="$APPDIR"/usr/share/locale:"$TEXTDOMAINDIR"
 EOF
