@@ -58,15 +58,15 @@ echo "Copying source files"
 cp --recursive $verbose "$LINUXDEPLOY_PLUGIN_GDB_SRC" "$appdir/usr/"
 
 echo "Installing new AppRun wrapper"
-mv $verbose "$appdir/AppRun.wrapped" "$appdir/AppRun.wrapped.real"
-cat > "$appdir/AppRun.wrapped" <<\EOF
+exe="$(readlink -f "$appdir/AppRun.wrapped")"
+rm $verbose "$appdir/AppRun.wrapped"
+cat > "$appdir/AppRun.wrapped" <<EOF
 #! /bin/bash
 
-if [[ -n "$APPIMAGE_USE_GDB" ]]; then
-	gdb --cd "$APPDIR/usr/@SRCDIR@" --args "$APPDIR/AppRun.wrapped.real" "$@"
+if [[ -n "\$APPIMAGE_USE_GDB" ]]; then
+	gdb --cd "\$APPDIR/usr/$(basename "$LINUXDEPLOY_PLUGIN_GDB_SRC")" --args "\$APPDIR/${exe#$appdir}" "\$@"
 else
-	exec "$APPDIR/AppRun.wrapped.real" "$@"
+	exec "\$APPDIR/${exe#$appdir}" "\$@"
 fi
 EOF
-sed -i "s|@SRCDIR@|$(basename "$LINUXDEPLOY_PLUGIN_GDB_SRC")|" "$appdir/AppRun.wrapped"
 chmod $verbose 755 "$appdir/AppRun.wrapped"
