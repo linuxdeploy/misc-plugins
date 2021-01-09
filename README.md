@@ -38,6 +38,11 @@ The `demo` plugin is a very simple, minimal working example plugin. Please feel 
 Only plugins with free software licenses (recognized by the OSI) are accepted into this repository. It is highly recommended to use the MIT license (the same license linuxdeploy and all official plugins use), but it's not mandatory. However, if your plugin uses a non-permissive license (e.g., a copyleft one), it might be rejected, depending on how it works.
 
 
+## Testing
+
+Basic tests are available under `tests`. Plugins that require specific environment variables must have a `.test.env` file in their directory, containing all prerequisite.
+
+
 ## Licensing
 
 All plugin scripts reside in subdirectories of this repository, along with a README. If there is no LICENSE file next to the plugin script, the license in `LICENSE.txt` in the root directory of the repository applies.

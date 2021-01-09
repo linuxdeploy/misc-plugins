@@ -1,0 +1,14 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test-plugins:
+    name: Linux x64_64
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run test script
+      run: ./tests/test-plugins.sh
