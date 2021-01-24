@@ -10,5 +10,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Lint test script
+      run: shellcheck ./tests/test-plugins.sh
+
     - name: Run test script
       run: ./tests/test-plugins.sh

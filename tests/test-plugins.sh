@@ -27,11 +27,6 @@ run_invalid_command() {
 	fi
 }
 
-echo -e "\033[1mTesting $0...\033[0m"
-printf "%-60s" " - lint script"
-run_valid_command shellcheck "$(readlink -f "$0")"
-echo
-
 while IFS= read -r -d '' plugin; do
 	name="$(basename "$plugin")"
 	echo -e "\033[1mTesting plugin $name...\033[0m"
