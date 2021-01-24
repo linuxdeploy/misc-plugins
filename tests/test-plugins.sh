@@ -1,7 +1,7 @@
 #! /bin/bash
 
-repodir="$(git rev-parse --show-toplevel)"
-appdir="$(mktemp --directory)"
+repodir="${REPODIR:-"$(git rev-parse --show-toplevel)"}"
+appdir="${APPDIR:-"$(mktemp --directory -t AppDir.XXXXXXXXXX)"}"
 count=0
 failed=0
 
