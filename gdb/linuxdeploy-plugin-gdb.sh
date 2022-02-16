@@ -58,15 +58,19 @@ echo "Copying source files"
 cp --recursive $verbose "$LINUXDEPLOY_PLUGIN_GDB_SRC" "$appdir/usr/"
 
 echo "Installing new AppRun wrapper"
-exe="$(readlink -f "$appdir/AppRun.wrapped")"
-rm $verbose "$appdir/AppRun.wrapped"
-cat > "$appdir/AppRun.wrapped" <<EOF
+# AppRun script does: exec "$this_dir"/AppRun.wrapped "$@"
+# AppRun.wrapped (this script) is a wrapper on AppRun.wrapped.orig
+# AppRun.wrapped.orig is the real application
+old_exe="$(readlink -f "$appdir/AppRun.wrapped")"
+new_exe="$old_exe.orig"
+mv $verbose "$old_exe" "$new_exe"
+cat > "$old_exe" <<EOF
 #! /bin/bash
 
 if [[ -n "\$APPIMAGE_USE_GDB" ]]; then
-	gdb --cd "\$APPDIR/usr/$(basename "$LINUXDEPLOY_PLUGIN_GDB_SRC")" --args "\$APPDIR/${exe#$appdir}" "\$@"
+	gdb --cd "\$APPDIR/usr/$(basename "$LINUXDEPLOY_PLUGIN_GDB_SRC")" --args "\$APPDIR/${new_exe#$appdir}" "\$@"
 else
-	exec "\$APPDIR/${exe#$appdir}" "\$@"
+	exec "\$APPDIR/${new_exe#$appdir}" "\$@"
 fi
 EOF
-chmod $verbose 755 "$appdir/AppRun.wrapped"
+chmod $verbose 755 "$old_exe"
