@@ -1,0 +1,133 @@
+#!/bin/bash
+#
+# linuxdeploy-plugin-installdesktop.sh
+#
+# Linuxdeploy plugin to add an --install-menu / --install-desktop
+# option to AppImage files which when run, install a desktop and 
+# icon file into the desktop menu infrastructure.
+# When the AppImage file is run as root, the menu files are installed
+# in /usr/share.  Otherwise, they are stored in the user's .config/share
+# folder.
+#
+
+# exit whenever a command called in this script fails
+set -e
+
+APPDIR=""
+HOOKFILE="linuxdeploy-plugin-installdesktop-hook.sh"
+
+show_usage() {
+    echo "Usage: bash $0 --appdir <AppDir>"
+}
+
+while [ "$1" != "" ]; do
+    case "$1" in
+        --plugin-api-version)
+            echo "0"
+            exit 0
+            ;;
+        --appdir)
+            APPDIR="$2"
+            shift
+            shift
+            ;;
+        *)
+            echo "Invalid argument: $1"
+            echo
+            show_usage
+            exit 2
+    esac
+done
+
+if [ -z "${APPDIR}" ]; then
+	show_usage
+	exit 2
+fi
+
+#
+# DEFINITION OF APPHOOK SCRIPT
+#
+
+set -x
+mkdir -p "$APPDIR/apprun-hooks"
+cat > "$APPDIR/apprun-hooks/$HOOKFILE" <<\EOF
+#!/bin/bash
+#
+# installdesktop`
+#
+
+if [ "$1" == "--help" ]; then
+	echo "${APPIMAGE} --install-desktop    - Installs desktop menu files (in /usr/share if run as root)"
+fi
+
+if [ "$1" == "--install-menu" ] || [ "$1" == "--install-desktop" ]; then
+
+	if [ -z "${APPIMAGE}" ]; then
+		echo "APPIMAGE variable not set"
+		exit
+	fi
+
+	if [ -z "${APPDIR}" ]; then
+		echo "APPDIR variable not set"
+		exit
+	fi
+
+	if [ -z "${HOME}" ]; then
+		echo "HOME variable not set"
+		exit
+	fi
+
+	WHOAMI=`whoami`
+
+	if [ "${WHOAMI}" == "root" ]; then
+		TARGET="/usr/share"
+	else
+		TARGET="${HOME}/.local/share"
+	fi
+
+	DESKTOP=${APPDIR}/*.desktop
+
+	if [ ! -f ${DESKTOP} ]; then
+		echo ".desktop file expected in ${APPDIR}"
+		exit
+	fi
+
+        if [ -f ${APPDIR}/*.png ];  then
+                ICON=${APPDIR}/*.png
+        fi
+        if [ -f ${APPDIR}/*.svg ]; then
+                ICON=${APPDIR}/*.svg
+        fi
+        if [ -z ${ICON} ]; then
+                echo "png or svg icon not found in ${APPDIR}"
+                exit
+        fi
+
+	ICONFN="`echo ${ICON} | rev | cut -d/ -f1 | rev`"
+	DESKTOPFN="`echo ${DESKTOP} | rev | cut -d/ -f1 | rev`"
+
+	# Parse and Copy Desktop File
+	echo "Copying/Updating desktop file in ${TARGET}/applications/${DESKTOPFN}"
+
+	mkdir -p "${TARGET}/applications"
+	cat "${APPDIR}/${DESKTOPFN}" | sed -e "s\\^exec=.*$\\Exec=${APPIMAGE}\\gi" > "${TARGET}/applications/${DESKTOPFN}"
+
+	# Copy the Icon File
+	if [ ! -f "${TARGET}/icons/${ICONFN}" ]; then
+		echo "Copying ICON to ${TARGET}/icons/${ICONFN}"
+		mkdir -p "${TARGET}/icons"
+		cp "${APPDIR}/${ICONFN}" "${TARGET}/icons"
+	fi
+
+	# Update complete, so finish execution
+	exit
+fi
+
+EOF
+#
+# End of apprun-hooks scropt
+#
+
+echo "hook script installed in ${APPDIR}/apprun-hooks/${HOOKFILE}"
+exit 0
+
