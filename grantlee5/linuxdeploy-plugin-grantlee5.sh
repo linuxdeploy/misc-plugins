@@ -68,6 +68,20 @@ set(imported_target "Grantlee5::defaultfilters")
 
 message(STATUS "Fetching imported location for target ${imported_target}")
 
+foreach(property_name IMPORTED_LOCATION_NONE IMPORTED_LOCATION_RELWITHDEBINFO)
+    get_property(imported_location TARGET "${imported_target}" PROPERTY "${property_name}")
+
+    message(STATUS "Property ${property_name} value: \"${imported_location}\"")
+
+    if(NOT "${imported_location}" STREQUAL "")
+        break()
+    endif()
+endforeach()
+
+if("${imported_location}" STREQUAL "")
+    message(FATAL_ERROR "Could not find location with CMake")
+endif()
+
 get_property(imported_location TARGET "${imported_target}" PROPERTY IMPORTED_LOCATION_NONE)
 message(STATUS "Imported location: ${imported_location}")
 
