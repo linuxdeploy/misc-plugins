@@ -108,7 +108,7 @@ install -v -D -t "$target_dir" "$GRANTLEE5_PLUGINS_DIR"/*
 echo "Using linuxdeploy to deploy dependencies"
 
 if ! test -x "$LINUXDEPLOY"; then
-    echo "Error: \$LINUXDEPLOY is not set"
+    echo "Error: \$LINUXDEPLOY is not set or not executable"
     exit 2
 fi
 
