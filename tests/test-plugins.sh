@@ -3,7 +3,27 @@
 set -eo pipefail
 
 repodir="${REPODIR:-"$(git rev-parse --show-toplevel)"}"
-appdir="${APPDIR:-"$(mktemp --tmpdir --directory AppDir.XXXXXXXX)"}"
+
+tempdir="$(mktemp --tmpdir --directory linuxdeploy-misc-plugin-XXXXX)"
+
+_cleanup() {
+    [[ -d "$tempdir" ]] && rm -r "$tempdir"
+}
+trap _cleanup EXIT
+
+# allow running plugins which require linuxdeploy internally
+pushd "$tempdir" &>/dev/null
+    echo -e -n "\033[1mDownloading linuxdeploy and plugins...\033[0m"
+    wget -qN https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+    wget -qN https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+    chmod +x linuxdeploy*
+popd &>/dev/null
+
+export LINUXDEPLOY="$tempdir"/linuxdeploy-x86_64.AppImage
+
+echo "done"
+
+appdir="${APPDIR:-$tempdir/AppDir}"
 count=0
 failed=0
 
