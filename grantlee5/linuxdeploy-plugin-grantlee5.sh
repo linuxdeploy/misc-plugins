@@ -91,7 +91,7 @@ EOF
     cmake . &>cmake.log
 
     # clean up log if everything worked, otherwise it would be printed by the cleanup handler
-    rm cmake.log
+    [[ "$VERBOSE" != "" ]] && rm cmake.log
 
     imported_location="$(cat imported-location)"
 
@@ -99,8 +99,6 @@ EOF
         echo "Error: could not find plugins location with CMake"
         exit 2
     fi
-
-    GRANTLEE5_PLUGINS_DIR="$(dirname "$imported_location")"
 
     popd &>/dev/null
 fi
