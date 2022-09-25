@@ -100,6 +100,8 @@ EOF
         exit 2
     fi
 
+    GRANTLEE5_PLUGINS_DIR="$(dirname "$imported_location")"
+
     popd &>/dev/null
 fi
 
