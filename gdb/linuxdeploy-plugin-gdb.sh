@@ -68,9 +68,9 @@ cat > "$old_exe" <<EOF
 #! /bin/bash
 
 if [[ -n "\$APPIMAGE_USE_GDB" ]]; then
-	gdb --cd "\$APPDIR/usr/$(basename "$LINUXDEPLOY_PLUGIN_GDB_SRC")" --args "\$APPDIR/${new_exe#$appdir}" "\$@"
+	gdb --cd "\$APPDIR/usr/$(basename "$LINUXDEPLOY_PLUGIN_GDB_SRC")" --args "\$APPDIR/${new_exe#"$appdir"}" "\$@"
 else
-	exec "\$APPDIR/${new_exe#$appdir}" "\$@"
+	exec "\$APPDIR/${new_exe#"$appdir"}" "\$@"
 fi
 EOF
 chmod $verbose 755 "$old_exe"
