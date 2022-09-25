@@ -91,6 +91,8 @@ EOF
     popd &>/dev/null
 fi
 
+echo "GRANTLEE5_PLUGINS_DIR=$\GRANTLEE5_PLUGINS_DIR"
+
 if [[ ! -d "$GRANTLEE5_PLUGINS_DIR" ]]; then
     echo "Error: grantlee5 plugins directory does not exist or could not be found"
     exit 2
