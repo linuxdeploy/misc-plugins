@@ -1,11 +1,14 @@
 #! /bin/bash
 
+set -eo pipefail
+
 repodir="${REPODIR:-"$(git rev-parse --show-toplevel)"}"
 appdir="${APPDIR:-"$(mktemp --tmpdir --directory AppDir.XXXXXXXX)"}"
 count=0
 failed=0
 
 run_valid_command() {
+    set +e
 	((count++))
 	if out="$("$@" 2>&1 )"; then
 		echo -e "[\033[1;32m  OK  \033[0m]"
@@ -14,9 +17,11 @@ run_valid_command() {
 		((failed++))
 		echo "$out"
 	fi
+    set -e
 }
 
 run_invalid_command() {
+    set +e
 	((count++))
 	if out="$("$@" 2>&1 )"; then
 		echo -e "[\033[1;31mFAILED\033[0m]"
@@ -25,6 +30,7 @@ run_invalid_command() {
 	else
 		echo -e "[\033[1;32m  OK  \033[0m]"
 	fi
+    set -e
 }
 
 while IFS= read -r -d '' plugin; do
