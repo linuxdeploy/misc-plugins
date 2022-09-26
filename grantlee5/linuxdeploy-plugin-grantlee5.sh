@@ -90,8 +90,12 @@ EOF
 
     cmake . &>cmake.log
 
+    if [[ "$VERBOSE" != "" ]]; then
+        cat cmake.log
+    fi
+
     # clean up log if everything worked, otherwise it would be printed by the cleanup handler
-    [[ "$VERBOSE" != "" ]] && rm cmake.log
+    rm cmake.log
 
     imported_location="$(cat imported-location)"
 
