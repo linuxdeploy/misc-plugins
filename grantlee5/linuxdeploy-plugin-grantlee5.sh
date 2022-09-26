@@ -82,7 +82,6 @@ if("${imported_location}" STREQUAL "")
     message(FATAL_ERROR "Could not find location with CMake")
 endif()
 
-get_property(imported_location TARGET "${imported_target}" PROPERTY IMPORTED_LOCATION_NONE)
 message(STATUS "Imported location: ${imported_location}")
 
 file(WRITE "${CMAKE_CURRENT_SOURCE_DIR}/imported-location" "${imported_location}")
