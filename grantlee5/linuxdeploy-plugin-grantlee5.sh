@@ -119,6 +119,11 @@ fi
 # this should always be the last component, as the plugins need to be stored in a directory like .../grantlee/<version>/grantlee*.so
 grantlee5_version="$(echo "$GRANTLEE5_PLUGINS_DIR" | rev | cut -d/ -f1 | rev)"
 
+if [[ "$grantlee5_version" == "" ]]; then
+    echo "Error: failed to detect grantlee5 version"
+    exit 2
+fi
+
 target_dir="$appdir"/usr/plugins/grantlee/"$grantlee5_version"
 
 echo "Copying plugins from $GRANTLEE5_PLUGINS_DIR to $target_dir"
