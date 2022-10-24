@@ -117,7 +117,7 @@ fi
 
 # guess grantlee version from the plugin path
 # this should always be the last component, as the plugins need to be stored in a directory like .../grantlee/<version>/grantlee*.so
-grantlee5_version="$(echo "$GRANTLEE5_PLUGINS_DIR" | rev | cut -d/ -f1 | rev)"
+grantlee5_version="$(echo "$GRANTLEE5_PLUGINS_DIR" | sed -e 's|/*$||' | rev | cut -d/ -f1 | rev)"
 
 if [[ "$grantlee5_version" == "" ]]; then
     echo "Error: failed to detect grantlee5 version"
