@@ -58,7 +58,7 @@ while IFS= read -r -d '' plugin; do
 	echo -e "\033[1mTesting plugin $name...\033[0m"
 
 	printf "%-60s" " - lint plugin"
-	run_valid_command shellcheck "$plugin"
+	run_valid_command shellcheck --external-sources "$plugin"
 
 	printf "%-60s" " - run with wrong usage"
 	run_invalid_command bash "$plugin"
