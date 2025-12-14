@@ -3,9 +3,11 @@
 # exit whenever a command called in this script fails
 set -e
 
+
+verbose=()
 if [ "$DEBUG" != "" ]; then
     set -x
-    verbose="--verbose"
+    verbose+=("--verbose")
 fi
 
 appdir=""
@@ -55,7 +57,7 @@ if [ -z "$LINUXDEPLOY_PLUGIN_GDB_SRC" ]; then
 fi
 
 echo "Copying source files"
-cp --recursive $verbose "$LINUXDEPLOY_PLUGIN_GDB_SRC" "$appdir/usr/"
+cp --recursive "${verbose[@]}" "$LINUXDEPLOY_PLUGIN_GDB_SRC" "$appdir/usr/"
 
 echo "Installing new AppRun wrapper"
 # AppRun script does: exec "$this_dir"/AppRun.wrapped "$@"
@@ -63,7 +65,7 @@ echo "Installing new AppRun wrapper"
 # AppRun.wrapped.orig is the real application
 old_exe="$(readlink -f "$appdir/AppRun.wrapped")"
 new_exe="$old_exe.orig"
-mv $verbose "$old_exe" "$new_exe"
+mv "${verbose[@]}" "$old_exe" "$new_exe"
 cat > "$old_exe" <<EOF
 #! /bin/bash
 
@@ -73,4 +75,4 @@ else
 	exec "\$APPDIR/${new_exe#"$appdir"}" "\$@"
 fi
 EOF
-chmod $verbose 755 "$old_exe"
+chmod "${verbose[@]}" 755 "$old_exe"
