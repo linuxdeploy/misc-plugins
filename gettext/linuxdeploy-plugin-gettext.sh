@@ -39,5 +39,5 @@ mkdir -p "$appdir"/apprun-hooks
 cat > "$appdir"/apprun-hooks/linuxdeploy-plugin-gettext.sh <<\EOF
 #! /bin/bash
 
-export TEXTDOMAINDIR="$APPDIR"/usr/share/locale:"$TEXTDOMAINDIR"
+export TEXTDOMAINDIR="$APPDIR"/usr/share/locale
 EOF
