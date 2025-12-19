@@ -17,4 +17,4 @@ jobs:
       run: shellcheck ./tests/test-plugins.sh
 
     - name: Run test script
-      run: ./tests/test-plugins.sh
+      run: bash -x ./tests/test-plugins.sh
