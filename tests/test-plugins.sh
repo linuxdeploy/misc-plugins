@@ -7,6 +7,7 @@ repodir="${REPODIR:-"$(git rev-parse --show-toplevel)"}"
 tempdir="$(mktemp --tmpdir --directory linuxdeploy-misc-plugin-XXXXX)"
 
 _cleanup() {
+    # shellcheck disable=SC2317
     [[ -d "$tempdir" ]] && rm -r "$tempdir"
 }
 trap _cleanup EXIT
